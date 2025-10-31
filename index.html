@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBS Replay Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>OBS Replay Manager</h1>
+            <div class="connection-status" id="connectionStatus">
+                <span class="status-dot disconnected"></span>
+                <span>Desconectado de OBS</span>
+            </div>
+        </header>
+
+        <div class="controls-section">
+            <!-- Agregado input file con webkitdirectory para seleccionar carpetas -->
+            <div class="folder-selector">
+                <input type="file" id="folderInput" webkitdirectory directory multiple style="display: none;">
+                <button id="selectFolderBtn" class="btn btn-primary">
+                    Seleccionar Carpeta de Clips
+                </button>
+            </div>
+            <div class="folder-info">
+                <span id="folderPath" class="folder-path">Ninguna carpeta seleccionada</span>
+            </div>
+
+            <div class="obs-connection">
+                <input type="text" id="obsAddress" placeholder="ws://localhost:4455" value="ws://localhost:4455">
+                <input type="password" id="obsPassword" placeholder="Contraseña (opcional)">
+                <button id="connectBtn" class="btn btn-secondary">Conectar a OBS</button>
+            </div>
+
+            <div class="refresh-controls">
+                <button id="refreshBtn" class="btn btn-secondary">Actualizar Clips</button>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="autoRefresh" checked>
+                    Monitoreo automático activo
+                </label>
+            </div>
+        </div>
+
+        <div class="clips-section">
+            <h2>Clips Disponibles <span id="clipCount">(0)</span></h2>
+            <div id="clipsList" class="clips-list">
+                <div class="empty-state">
+                    <p>Selecciona la carpeta de clips para comenzar</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="obs-websocket.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
