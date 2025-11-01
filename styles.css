@@ -165,12 +165,12 @@ h1 {
 }
 
 .clips-section {
-  padding: 30px;
+  padding: 10px;
 }
 
 .clips-section h2 {
-  font-size: 20px;
-  margin-bottom: 20px;
+  font-size: 16px;
+  margin-bottom: 10px;
   color: #1f2937;
 }
 
@@ -181,10 +181,15 @@ h1 {
 
 .clips-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, 150px);
+  gap: 10px;
+  justify-content: start;
 }
-
+.clips-card {
+  width: 150px;
+  height: 100px;
+  flex-shrink: 0;
+}
 .empty-state {
   grid-column: 1 / -1;
   text-align: center;
@@ -339,4 +344,3 @@ h1 {
     text-align: center;
   }
 }
-
