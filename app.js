@@ -43,35 +43,63 @@ async function handleFolderSelection(event) {
   if (files.length === 0) {
     return
   }
+// ==== Bloque mejorado para rutas completas y persistentes ====
 
-  // Obtener la ruta de la carpeta del primer archivo
-  const firstFile = files[0]
-  const folderPath = firstFile.webkitRelativePath.split("/")[0]
+let baseFolder = localStorage.getItem("baseFolder")
 
-  // Filtrar solo archivos de video
-  const videoExtensions = [".mp4", ".mkv", ".avi", ".mov", ".flv", ".wmv", ".webm", ".m4v"]
-  const videoFiles = files.filter((file) => {
-    const ext = "." + file.name.split(".").pop().toLowerCase()
-    return videoExtensions.includes(ext)
-  })
+// Obtener el nombre de la carpeta seleccionada
+const selectedFolderName = files[0].webkitRelativePath.split("/")[0]
 
-  if (videoFiles.length === 0) {
-    alert("No se encontraron archivos de video en esta carpeta")
+// Si no hay ruta guardada o la carpeta es distinta, pedir ruta
+if (!baseFolder || !baseFolder.includes(selectedFolderName)) {
+  baseFolder = prompt(
+    `Escribe o pega la ruta completa de esta carpeta:\n\nEjemplo (Windows): C:\\Users\\Samuel\\Desktop\\${selectedFolderName}\nEjemplo (Mac): /Users/Samuel/Desktop/${selectedFolderName}`
+  )
+
+  if (!baseFolder) {
+    alert("No se ha especificado ninguna ruta. No se pueden cargar los videos.")
     return
   }
 
-  // Convertir archivos a formato de clips
-  state.clips = await Promise.all(
-    videoFiles.map(async (file) => {
-      return {
-        name: file.name,
-        path: file.webkitRelativePath,
-        size: file.size,
-        modified: file.lastModified,
-        file: file,
-      }
-    }),
-  )
+  // Guardar la nueva ruta en localStorage
+  localStorage.setItem("baseFolder", baseFolder)
+  console.log("Ruta base guardada:", baseFolder)
+}
+
+// Extensiones de video aceptadas
+const videoExtensions = [".mp4", ".mkv", ".avi", ".mov", ".flv", ".wmv", ".webm", ".m4v"]
+
+// Filtrar solo archivos de video
+const videoFiles = files.filter((file) => {
+  const ext = "." + file.name.split(".").pop().toLowerCase()
+  return videoExtensions.includes(ext)
+})
+
+if (videoFiles.length === 0) {
+  alert("No se encontraron archivos de video en esta carpeta")
+  return
+}
+
+// Crear lista de clips con ruta completa
+state.clips = videoFiles.map((file) => {
+  const isMac = navigator.platform.toLowerCase().includes("mac")
+  const sep = isMac ? "/" : "\\"
+
+  const fullPath = `${baseFolder}${sep}${file.name}`
+
+  return {
+    name: file.name,
+    path: fullPath,
+    size: file.size,
+    modified: file.lastModified,
+    file: file,
+  }
+})
+
+// Confirmar visualmente que las rutas están correctas
+console.log("Rutas de clips cargadas:", state.clips)
+
+// ==== Fin del bloque ====
 
   // Ordenar por fecha de modificación (más reciente primero)
   state.clips.sort((a, b) => b.modified - a.modified)
